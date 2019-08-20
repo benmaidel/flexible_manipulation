@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(flexible_manipulation_moveit_capabilities)
 
 #set(CMAKE_BUILD_TYPE Debug)
-set (CMAKE_CXX_STANDARD 11)
+#set (CMAKE_CXX_STANDARD 11)
 
 find_package( Boost REQUIRED COMPONENTS system thread )
 
@@ -17,7 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   pluginlib
   roscpp
   flexible_manipulation_msgs
-  tf
+  tf2
+  tf2_ros
 )
 
 catkin_package(

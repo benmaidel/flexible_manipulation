@@ -103,8 +103,6 @@ private:
   ros::Publisher trajectory_result_display_pub_;
   ros::Publisher circular_target_path_pub_;
 
-  tf::TransformListener transform_listener_;
-
   boost::shared_ptr<trajectory_processing::IterativeParabolicTimeParameterization> time_param_;
 
   std::vector<std::string> end_effector_links_vector_;

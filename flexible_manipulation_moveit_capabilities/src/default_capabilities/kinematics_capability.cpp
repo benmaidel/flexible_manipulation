@@ -137,11 +137,11 @@ void flexible_manipulation::KinematicsCapability::computeIK(
         bool result_ik = false;
         if (ik_link.empty())
         {
-          result_ik = rs.setFromIK(jmg, req_pose.pose, req.attempts, req.timeout.toSec(), constraint);
+          result_ik = rs.setFromIK(jmg, req_pose.pose, req.timeout.toSec(), constraint);
         }
         else
         {
-          result_ik = rs.setFromIK(jmg, req_pose.pose, ik_link, req.attempts, req.timeout.toSec(), constraint);
+          result_ik = rs.setFromIK(jmg, req_pose.pose, ik_link, req.timeout.toSec(), constraint);
         }
 
         if (result_ik)
@@ -168,7 +168,7 @@ void flexible_manipulation::KinematicsCapability::computeIK(
       else
       {
         bool ok = true;
-        EigenSTL::vector_Affine3d req_poses(req.pose_stamped_vector.size());
+        EigenSTL::vector_Isometry3d req_poses(req.pose_stamped_vector.size());
         for (std::size_t k = 0; k < req.pose_stamped_vector.size(); ++k)
         {
           geometry_msgs::PoseStamped msg = req.pose_stamped_vector[k];
@@ -185,7 +185,7 @@ void flexible_manipulation::KinematicsCapability::computeIK(
         }
         if (ok)
         {
-          if (rs.setFromIK(jmg, req_poses, req.ik_link_names, req.attempts, req.timeout.toSec(), constraint))
+          if (rs.setFromIK(jmg, req_poses, req.ik_link_names, req.timeout.toSec(), constraint))
           {
             robot_state::robotStateToRobotStateMsg(rs, solution, false);
             error_code.val = moveit_msgs::MoveItErrorCodes::SUCCESS;

@@ -24,7 +24,8 @@
   <!--depend>vigir_plan_execution</depend>
   <depend>vigir_moveit_utils</depend -->
   <depend>flexible_manipulation_msgs</depend>
-  <depend>tf</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
 
   <export>
     <moveit_ros_move_group plugin="${prefix}/flexible_manipulation_moveit_capabilities_plugin_description.xml"/>

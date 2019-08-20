@@ -68,6 +68,9 @@
 
 #include <nav_msgs/Path.h>
 
+#include <tf2/convert.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 using namespace move_group;
 
 namespace
@@ -191,9 +194,10 @@ void flexible_manipulation::MoveGroupExtendedAction::executeMoveCallback(
         goal->extended_planning_options.reference_point.orientation.w != 0.0)
     {
       ROS_INFO("Using reference point in the request");
-      tf::Transform target_frame_t_reference_point;
-      tf::Transform target_pose;
-      tf::Transform transformed_pose;
+      tf2::Transform target_frame_t_reference_point;
+      tf2::Transform target_pose;
+      tf2::Transform transformed_pose;
+
 
       new_target_poses = goal->extended_planning_options.target_poses;
 
@@ -205,13 +209,14 @@ void flexible_manipulation::MoveGroupExtendedAction::executeMoveCallback(
         ROS_INFO("Calculating new waypoints given reference point for FREE "
                  "MOTIONS and CATRTESIAN WAYPOINTS");
 
-        tf::poseMsgToTF(goal->extended_planning_options.reference_point, target_frame_t_reference_point);
+        tf2::fromMsg(goal->extended_planning_options.reference_point, target_frame_t_reference_point);
+
 
         for (size_t i = 0; i < goal->extended_planning_options.target_poses.size(); ++i)
         {
-          tf::poseMsgToTF(goal->extended_planning_options.target_poses[i], target_pose);
+          tf2::fromMsg(goal->extended_planning_options.target_poses[i], target_pose);
           transformed_pose = target_pose * target_frame_t_reference_point.inverse();
-          tf::poseTFToMsg(transformed_pose, new_target_poses[i]);
+          tf2::toMsg(transformed_pose, new_target_poses[i]);
         }
 
         new_goal->extended_planning_options.target_poses = new_target_poses;
@@ -247,7 +252,7 @@ void flexible_manipulation::MoveGroupExtendedAction::executeMoveCallback(
               tf::poseEigenToMsg(eef_start_pose, wrist_pose);  // Converts eef eigen pose to geometry pose
 
               // calculate the difference between them
-              tf::Vector3 diff_vector;
+              tf2::Vector3 diff_vector;
               diff_vector.setX(wrist_pose.position.x - reference_pose.pose.position.x);
               diff_vector.setY(wrist_pose.position.y - reference_pose.pose.position.y);
               diff_vector.setZ(wrist_pose.position.z - reference_pose.pose.position.z);
@@ -838,7 +843,7 @@ bool flexible_manipulation::MoveGroupExtendedAction::computeCartesianPath(moveit
     }
 
     bool ok = true;
-    EigenSTL::vector_Affine3d waypoints(req.waypoints.size());
+    EigenSTL::vector_Isometry3d waypoints(req.waypoints.size());
     const std::string& default_frame = context_->planning_scene_monitor_->getRobotModel()->getModelFrame();
     bool no_transform = req.header.frame_id.empty() ||
                         robot_state::Transforms::sameFrame(req.header.frame_id, default_frame) ||
